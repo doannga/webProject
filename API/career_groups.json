@@ -1,0 +1,102 @@
+{
+    "group": [
+        {
+            "name": "Công nghệ thông tin",
+            "careers" : [
+                "CNTT - Phần mềm",
+                "CNTT - Phần cứng/Mạng"
+            ]
+        },
+        {
+            "name": "Kinh tế",
+            "careers" : [
+                "Hành chính-Văn phòng",
+                "Kế toán - Kiểm toán",
+                "Thương mại điện tử",
+                "Tài chính - Ngân hàng",
+                "Quản trị kinh doanh",
+                "Marketing - Tiếp thị - Quảng cáo",
+                "Bảo hiểm - Chứng khoán",
+                "Nhân sự",
+                "Nhân viên kinh doanh - Bán hàng - Tư  vấn - CSKH",
+                "Dịch vụ - Khách sạn - Nhà hàng - Du lịch",
+                "Tổ chức sự kiện - Quà tặng",
+                "Bất động sản",
+                "Kinh doanh quốc tế",
+                "Hoạch định dự án",
+                "Hàng không",
+                "Hàng hải",
+                "An ninh – bảo vệ",
+                "Giúp việc - Phục vụ"
+            ]
+        },
+        {
+            "name": "Kiến trúc và xây dựng",
+            "careers" : [
+                "Xây dựng",
+                "Giao thông vận tải – Thủy lợi - Cầu đường"
+            ]
+        },
+        {
+            "name": "Khoa học - Kỹ thuật",
+            "careers" : [
+                "Điện tử viễn thông",
+                "Cơ khí – Chế tạo – Tự động hoá – Kỹ thuật ứng dụng",
+                "Điện – điện tử - điện lạnh",
+                "Công nghiệp",
+                "Dầu khí – Hóa chất – Khoáng sản",
+                "Công nghệ cao",
+                "Khoa học tự nhiên",
+                "Trang thiết bị gia dụng - công nghiệp - văn phòng",
+                "Hóa học – Sinh học",
+                "Môi trường – Xử lý chất thải",
+                "Y tế - dược"
+            ]
+        },
+        {
+            "name": "Sản xuất và chế biến",
+            "careers" : [
+                "Sản xuất - Vận hành sản xuất",
+                "Thực phẩm – đồ uống",
+                "Dệt may - da giày - Thời Trang"
+            ]
+        },
+        {
+            "name": "Luật - Nhân văn",
+            "careers" : [
+                "Biên – Phiên dịch",
+                "Quan hệ đối ngoại",
+                "Sư phạm",
+                "Luật"
+            ]
+        },
+        {
+            "name": "Báo chí",
+            "careers" : [
+                "In ấn – xuất bản",
+                "Báo chí – tuyên truyền"
+            ]
+        },
+        {
+            "name": "Nghệ thuật - Thẩm mỹ - Đồ họa",
+            "careers" : [
+                "Thiết kế - Mỹ thuật",
+                "Thiết kế đồ họa web",
+                "Thủ công mỹ nghệ",
+                "Nghệ thuật – điện ảnh",
+                "Giải trí"
+            ]
+        },
+        {
+
+            "name": "Khác",
+            "careers" : [
+                "Nông - Lâm - Ngư nghiệp",
+                "Bưu chính - Giao vận - Kho vận - Vật tư",
+                "Spa-Mỹ phẩm-Trang sức",
+                "Nghệ thuật – điện ảnh",
+                "Giải trí"
+            ]
+        }
+    ]
+}
