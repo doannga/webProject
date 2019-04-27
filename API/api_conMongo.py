@@ -73,12 +73,12 @@ def get_search_recruitment_news():
 		for x in careers:
 			careerGroupParams.append({'career': {'$regex': str(x)}})
 		params['$or'] = careerGroupParams
-				
-		
+
+
 
 	if career != '':
 		params['career'] = {'$regex': str(career)}
-		
+
 	if address != '':
 		params['address'] = {'$regex': str(address)}
 
@@ -108,7 +108,7 @@ def get_search_recruitment_news():
 
 
 	print('params ========> ', params)
-	data = list(recruitment_news.find(params))			
+	data = list(recruitment_news.find(params))
 
 	totalSize = len(data)
 	if totalSize > 0:
@@ -120,28 +120,112 @@ def get_search_recruitment_news():
 	for x in recruiments_data:
 		output.append({
 			'id' : str(x['_id']),
-			'url': x['url'], 
-			'career': x['career'], 
-			'title': x['title'], 
-			'company': x['company'], 
-			'address': x['address'], 
-			'salary': x['salary'], 
-			'experience': x['experience'], 
-			'description': x['description'], 
-			'diploma': x['diploma'], 
-			'amount': x['amount'], 
-			# 'position': str(x['position']), 
-			'category': x['category'], 
-			'trial_time': x['trial_time'], 
-			'sex': x['sex'], 
-			'age': x['age'], 
-			'benefits': x['benefits'], 
-			'require_skill': x['require_skill'], 
-			'contact': x['contact'], 
+			'url': x['url'],
+			'career': x['career'],
+			'title': x['title'],
+			'company': x['company'],
+			'address': x['address'],
+			'salary': x['salary'],
+			'experience': x['experience'],
+			'description': x['description'],
+			'diploma': x['diploma'],
+			'amount': x['amount'],
+			# 'position': str(x['position']),
+			'category': x['category'],
+			'trial_time': x['trial_time'],
+			'sex': x['sex'],
+			'age': x['age'],
+			'benefits': x['benefits'],
+			'require_skill': x['require_skill'],
+			'contact': x['contact'],
 			'expired': x['expired'].strip()
 		})
-	
-	return jsonify({'result': output, 'page': page, 'total_size': totalSize})
 
+	return jsonify({'result': output, 'page': page, 'total_size': totalSize})
+@app.route('/analysist_career_groups', methods = ['GET'])
+def analysist_career_groups():
+	careerGroups = request.args['career_groups']
+	length = request.args['length']
+	output = []
+	dataList = []
+	with open('./career_groups.json') as json_file:
+		data = json.load(json_file)
+		dataList = list(data['group'])
+
+	if careerGroups == '':
+		careerGroups = []
+		if int(length) > len(dataList):
+			length = len(dataList)
+		for x in range(int(length)):
+			careerGroups.append(dataList[x]['name'])
+	else:
+		careerGroups = careerGroups.split(',')
+
+	for careerGroup in careerGroups:
+		index = next((i for i, item in enumerate(dataList) if item['name'] == careerGroup), -1)
+		if index > -1:
+			params = {}
+			careerGroupParams = []
+			for x in dataList[index]['careers']:
+				careerGroupParams.append({'career': {'$regex': str(x)}})
+			params['$or'] = careerGroupParams
+			data = list(recruitment_news.find(params))
+			output.append({
+				'career_group': careerGroup,
+				'size': len(data)
+			})
+		else:
+			output.append({
+				'careerGroup': careerGroup,
+				'size': 0
+			})
+
+
+	total = sum(i['size'] for i in output)
+	for i in output:
+		if total == 0:
+			i['percent']: 0
+		else:
+			i['percent'] = round(int(i['size']) / total * 100)
+
+	return jsonify({'result': output})
+
+@app.route('/analysist_careers', methods = ['GET'])
+def analysist_careers():
+	careers = request.args['careers']
+	length = request.args['length']
+	output = []
+	dataList = []
+	with open('./career_groups.json') as json_file:
+		data = json.load(json_file)
+		for x in data['group']:
+			dataList.extend(x['careers'])
+
+	if careers == '':
+		careers = []
+		if int(length) > len(dataList):
+			length = len(dataList)
+		for x in range(int(length)):
+			careers.append(dataList[x])
+	else:
+		careers = careers.split(',')
+
+	for career in careers:
+		params = {}
+		params['$or'] = [{'career': {'$regex': career}}]
+		data = list(recruitment_news.find(params))
+		output.append({
+			'career': career,
+			'size': len(data)
+		})
+
+	# total = sum(i['size'] for i in output)
+	# for i in output:
+	# 	if total == 0:
+	# 		i['percent']: 0
+	# 	else:
+	# 		i['percent'] = round(int(i['size']) / total * 100)
+
+	return jsonify({'result': output})
 if __name__ == '__main__':
  	app.run(debug = True)

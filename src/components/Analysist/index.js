@@ -61,10 +61,11 @@ class AnalysistPage extends Component {
             return (
                 <div>
                     <CareerGroupsChart career_groups={career_groups} />
-                    <CareerGroupsBar careers={careers}/>
+                    <CareerGroupsBar careers={careers} />
                 </div>
             );
         }
     }
 }
+
 export default AnalysistPage;
