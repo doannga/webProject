@@ -1,45 +1,48 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import Moment from 'react-moment';
+import React from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TablePagination from "@material-ui/core/TablePagination";
+import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import Checkbox from "@material-ui/core/Checkbox";
+import Moment from "react-moment";
 
 const rows = [
-  { id: 'company', align: 'center', disablePadding: true, label: 'Công ty' },
-  { id: 'salary', align: 'center', disablePadding: true, label: 'Mức lương' },
-  { id: 'address', align: 'center', disablePadding: true, label: 'Địa chỉ' },
-  { id: 'expired', align: 'center', disablePadding: true, label: 'Hạn' },
+  { id: "company", align: "center", disablePadding: true, label: "Công ty" },
+  { id: "salary", align: "center", disablePadding: true, label: "Mức lương" },
+  { id: "address", align: "center", disablePadding: true, label: "Địa chỉ" },
+  { id: "expired", align: "center", disablePadding: true, label: "Hạn" }
 ];
 
 class EnhancedTableHead extends React.Component {
-
   render() {
     return (
       <TableHead>
         <TableRow>
-          <TableCell></TableCell>
+          <TableCell />
           {rows.map(
             row => (
               <TableCell
                 key={row.id}
                 align={row.align}
-                padding={row.disablePadding ? 'none' : 'default'}
+                padding={row.disablePadding ? "none" : "default"}
                 style={{ paddingLeft: 10, paddingRight: 10 }}
               >
-                <Typography variant="body2" gutterBottom style={{ fontWeight: 'bold' }}>
+                <Typography
+                  variant="body2"
+                  gutterBottom
+                  style={{ fontWeight: "bold" }}
+                >
                   {row.label}
                 </Typography>
               </TableCell>
             ),
-            this,
+            this
           )}
         </TableRow>
       </TableHead>
@@ -47,18 +50,15 @@ class EnhancedTableHead extends React.Component {
   }
 }
 
-
 const styles = theme => ({
   root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    width: "100%",
+    marginTop: theme.spacing.unit * 3
   },
-  table: {
-
-  },
+  table: {},
   tableWrapper: {
-    overflowX: 'auto',
-  },
+    overflowX: "auto"
+  }
 });
 
 class RecruimentTable extends React.Component {
@@ -72,119 +72,168 @@ class RecruimentTable extends React.Component {
   handleClick = (event, item, onHandleItemSelected) => {
     const { selected, limitSelect, ids } = this.state;
     const selectedIndex = ids.indexOf(item.id);
-    let count = selected.length
+    let count = selected.length;
 
     if (selectedIndex === -1) {
       if (count < limitSelect) {
-        selected.push(item)
-        ids.push(item.id)
+        selected.push(item);
+        ids.push(item.id);
       }
     } else {
-      selected.splice(selectedIndex, 1)
-      ids.splice(selectedIndex, 1)
+      selected.splice(selectedIndex, 1);
+      ids.splice(selectedIndex, 1);
     }
-    this.setState({
-      selected: selected,
-      ids: ids
-    }, () => {
-      onHandleItemSelected(selected)
-    })
+    this.setState(
+      {
+        selected: selected,
+        ids: ids
+      },
+      () => {
+        onHandleItemSelected(selected);
+      }
+    );
   };
 
-  isSelected = id => this.state.ids.indexOf(id) !== -1
+  isSelected = id => this.state.ids.indexOf(id) !== -1;
 
-  isAllowSelect = (id) => {
-    let { limitSelect, selected } = this.state
-    return selected.length < limitSelect || this.isSelected(id)
-  }
+  isAllowSelect = id => {
+    let { limitSelect, selected } = this.state;
+    return selected.length < limitSelect || this.isSelected(id);
+  };
 
   handleSalary(salary) {
     if (salary == null) {
-      return '0 VNĐ'
+      return "0 VNĐ";
     }
-    return this.convertStringToSalary(salary.minValue) + ' - ' + this.convertStringToSalary(salary.maxValue) + ' ' + salary.currency
+    return (
+      this.convertStringToSalary(salary.minValue) +
+      " - " +
+      this.convertStringToSalary(salary.maxValue) +
+      " " +
+      salary.currency
+    );
   }
 
   convertStringToSalary(salary) {
     if (salary == null) {
-      return '0'
+      return "0";
     }
-    return salary.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    return salary.toLocaleString(navigator.language, {
+      minimumFractionDigits: 0
+    });
   }
 
   componentWillUpdate() {
-    const {clearSelected, onHandleItemChecked } = this.props
+    const { clearSelected, onHandleItemChecked } = this.props;
     if (clearSelected) {
       this.setState({
         selected: [],
         ids: []
-      })
-      onHandleItemChecked([])
+      });
+      onHandleItemChecked([]);
     }
     console.log(clearSelected);
   }
 
   render() {
-    const { classes, data, totalSize, page, rowsPerPage, handleChangePage, 
-      onHandleItemChecked } = this.props;
+    const {
+      classes,
+      data,
+      totalSize,
+      page,
+      rowsPerPage,
+      handleChangePage,
+      onHandleItemChecked
+    } = this.props;
 
-    
-    
-
-    return ( 
+    return (
       <Paper className={classes.root}>
-        
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead />
             <TableBody>
-              {
-                data.map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => this.handleClick(event, n, onHandleItemChecked)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={n.id}
-                      selected={isSelected}
+              {data.map(n => {
+                const isSelected = this.isSelected(n.id);
+                return (
+                  <TableRow
+                    hover
+                    onClick={event =>
+                      this.handleClick(event, n, onHandleItemChecked)
+                    }
+                    role="checkbox"
+                    aria-checked={isSelected}
+                    tabIndex={-1}
+                    key={n.id}
+                    selected={isSelected}
+                  >
+                    <TableCell
+                      padding="none"
+                      style={{ paddingLeft: 10, paddingRight: 10 }}
                     >
-                      <TableCell padding='none' style={{ paddingLeft: 10, paddingRight: 10 }}>
-                        <Checkbox color="primary" checked={isSelected} disabled={!this.isAllowSelect(n.id)} />
-                      </TableCell>
-                      <TableCell component="th" scope="row" padding='none' style={{ padding: 10 }}>
-                        <a href={n.url} target="_blank" rel="noopener noreferrer"
-                          style={{ textDecoration: 'none', outline: 'none'}}>
-                          <Typography
-                            gutterBottom
-                            style={{ display: "flex", alignItems: "center", fontWeight: 'bold', color: '#0060B6'  }}
-                          >
-                            {n.title}
-                          </Typography></a>
+                      <Checkbox
+                        color="primary"
+                        checked={isSelected}
+                        disabled={!this.isAllowSelect(n.id)}
+                      />
+                    </TableCell>
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      padding="none"
+                      style={{ padding: 10 }}
+                    >
+                      <a
+                        href={n.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ textDecoration: "none", outline: "none" }}
+                      >
                         <Typography
+                          gutterBottom
                           style={{
-                            cursor: "pointer",
                             display: "flex",
-                            alignItems: "center"
+                            alignItems: "center",
+                            fontWeight: "bold",
+                            color: "#0060B6"
                           }}
                         >
-                          {n.hiringOrganization.name}
+                          {n.title}
                         </Typography>
-
-                      </TableCell>
-                      <TableCell align="center" padding='none' style={{ paddingLeft: 10, paddingRight: 10 }}>{this.handleSalary(n.baseSalary)}</TableCell>
-                      <TableCell align="center" padding='none' style={{ paddingLeft: 10, paddingRight: 10 }}>{n.jobLocation.address.addressRegion}</TableCell>
-                      <TableCell align="center" padding='none' style={{ paddingLeft: 10, paddingRight: 10 }}>                    
-                        <Moment format="DD/MM/YYYY">
-                          {/* {n.validThrough} */}
-                        </Moment>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })
-              }
+                      </a>
+                      <Typography
+                        style={{
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center"
+                        }}
+                      >
+                        {n.hiringOrganization.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      padding="none"
+                      style={{ paddingLeft: 10, paddingRight: 10 }}
+                    >
+                      {this.handleSalary(n.baseSalary)}
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      padding="none"
+                      style={{ paddingLeft: 10, paddingRight: 10 }}
+                    >
+                      {n.jobLocation.address.addressRegion}
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      padding="none"
+                      style={{ paddingLeft: 10, paddingRight: 10 }}
+                    >
+                      <Moment format="DD/MM/YYYY">{n.validThrough}</Moment>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
@@ -195,10 +244,10 @@ class RecruimentTable extends React.Component {
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
-            'aria-label': 'Previous Page',
+            "aria-label": "Previous Page"
           }}
           nextIconButtonProps={{
-            'aria-label': 'Next Page',
+            "aria-label": "Next Page"
           }}
           onChangePage={handleChangePage}
         />
@@ -208,7 +257,7 @@ class RecruimentTable extends React.Component {
 }
 
 RecruimentTable.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(RecruimentTable);
