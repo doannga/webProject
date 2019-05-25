@@ -181,10 +181,10 @@ class CustomizedSelects extends React.Component {
             <MenuItem value='-1' key={-1}>Tất cả kinh nghiệm</MenuItem>
             <MenuItem value='Không yêu cầu' key={0}>Không yêu cầu</MenuItem>
             <MenuItem value='Dưới 1 năm' key={1}>Dưới 1 năm</MenuItem>
-            <MenuItem value={1} key={2}>1 năm</MenuItem>
-            <MenuItem value={2} key={3}>2 năm</MenuItem>
-            <MenuItem value={3} key={4}>3 năm</MenuItem>
-            <MenuItem value={4} key={5}>4 năm</MenuItem>
+            <MenuItem value='1 năm' key={2}>1 năm</MenuItem>
+            <MenuItem value='2 năm' key={3}>2 năm</MenuItem>
+            <MenuItem value='3 năm' key={4}>3 năm</MenuItem>
+            <MenuItem value='4 năm' key={5}>4 năm</MenuItem>
             <MenuItem value='Trên 5 năm' key={6}>Trên 5 năm</MenuItem>
           </Select>
         </FormControl>

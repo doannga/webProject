@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
+import Moment from 'react-moment';
 
 const rows = [
   { id: 'company', align: 'center', disablePadding: true, label: 'Công ty' },
@@ -98,20 +99,17 @@ class RecruimentTable extends React.Component {
   }
 
   handleSalary(salary) {
-    let length = salary.length
-    if (length === 2) {
-      if (!isNaN(salary[0]) && !isNaN(salary[1])) {
-        return this.convertStringToSalary(salary[0]) + " - " + this.convertStringToSalary(salary[1])
-      }
+    if (salary == null) {
+      return '0 VNĐ'
     }
-    return salary
+    return this.convertStringToSalary(salary.minValue) + ' - ' + this.convertStringToSalary(salary.maxValue) + ' ' + salary.currency
   }
 
   convertStringToSalary(salary) {
-    if (salary > 1000000) {
-      return salary / 1000000 + "tr"
+    if (salary == null) {
+      return '0'
     }
-    return salary
+    return salary.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
   }
 
   componentWillUpdate() {
@@ -172,13 +170,17 @@ class RecruimentTable extends React.Component {
                             alignItems: "center"
                           }}
                         >
-                          {n.company}
+                          {n.hiringOrganization.name}
                         </Typography>
 
                       </TableCell>
-                      <TableCell align="center" padding='none' style={{ paddingLeft: 10, paddingRight: 10 }}>{this.handleSalary(n.salary)}</TableCell>
-                      <TableCell align="center" padding='none' style={{ paddingLeft: 10, paddingRight: 10 }}>{n.address}</TableCell>
-                      <TableCell align="center" padding='none' style={{ paddingLeft: 10, paddingRight: 10 }}>{n.expired}</TableCell>
+                      <TableCell align="center" padding='none' style={{ paddingLeft: 10, paddingRight: 10 }}>{this.handleSalary(n.baseSalary)}</TableCell>
+                      <TableCell align="center" padding='none' style={{ paddingLeft: 10, paddingRight: 10 }}>{n.jobLocation.address.addressRegion}</TableCell>
+                      <TableCell align="center" padding='none' style={{ paddingLeft: 10, paddingRight: 10 }}>                    
+                        <Moment format="DD/MM/YYYY">
+                          {/* {n.validThrough} */}
+                        </Moment>
+                      </TableCell>
                     </TableRow>
                   )
                 })

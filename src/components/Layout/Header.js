@@ -5,8 +5,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
-import SearchIcon from "@material-ui/icons/Search";
-import { InputBase } from "@material-ui/core";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from "@material-ui/core/styles/colorManipulator";
@@ -34,20 +32,8 @@ class Header extends Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" noWrap>
-              Đồ án
+              BKWORKS
             </Typography>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput
-                }}
-              />
-            </div>
           </Toolbar>
         </AppBar>
       </div>

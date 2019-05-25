@@ -10,7 +10,8 @@ class AnalysistPage extends Component {
             error: null,
             isLoaded: false,
             career_groups: [],
-            careers: []
+            careers: [],
+            address: []
         }
     }
 
@@ -24,6 +25,23 @@ class AnalysistPage extends Component {
                         isLoaded: true,
                         career_groups: this.getCareerGroups(result.result),
                         careers: this.getCareersInCareerGroup(result.result)
+                    });
+                },
+                error => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            );
+        fetch("http://127.0.0.1:5000/tinh_tpho", { method: "GET" })
+            .then(res => res.json())
+            .then(
+                result => {
+                    console.log("result: ", result);
+                    this.setState({
+                        isLoaded: true,
+                        address: result.result
                     });
                 },
                 error => {
@@ -52,7 +70,7 @@ class AnalysistPage extends Component {
     }
 
     render() {
-        const { error, isLoaded, career_groups, careers } = this.state;
+        const { error, isLoaded, career_groups, careers, address } = this.state;
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
@@ -61,7 +79,7 @@ class AnalysistPage extends Component {
             return (
                 <div>
                     <CareerGroupsChart career_groups={career_groups} />
-                    <CareerGroupsBar careers={careers} />
+                    <CareerGroupsBar careers={careers} address={address} />
                 </div>
             );
         }

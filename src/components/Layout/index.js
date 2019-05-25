@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Header from './Header'
 import DrawerLeft from './drawer-left'
-import Footer from './Footer'
 
 const drawerWidth = 240;
 
@@ -71,7 +70,6 @@ class Layout extends React.Component {
         >
           <div className={classes.drawerHeader} />
           <div className="content">{children}</div>
-          <Footer />
         </main>
 
       </div>

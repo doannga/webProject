@@ -9,18 +9,16 @@ const styles = theme => ({
     justifyContent: 'center',
     flexWrap: 'wrap',
   },
-  
+
 });
 
 function CareerTag(props) {
   const { classes, items } = props;
   return (
     <div className={classes.root}>
-        {
-            items.map((item, index) => <Chip label={item} key={index} className={classes.chip} style={{margin: 5}} />)
-        }
-      
-      
+      {
+        items.map((item, index) => <Chip label={item} key={index} className={classes.chip} style={{ margin: 5 }} />)
+      }
     </div>
   );
 }

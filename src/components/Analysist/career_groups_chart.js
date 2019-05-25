@@ -7,7 +7,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Chip from '@material-ui/core/Chip';
-import { Pie } from 'react-chartjs-2';
+import ReactApexChart from 'react-apexcharts'
+import Fade from '@material-ui/core/Fade';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
 
 
 const ITEM_HEIGHT = 48;
@@ -35,8 +38,20 @@ const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#80CBC4', '#BA68B8'];
 class CareerGroupsChart extends PureComponent {
     state = {
         selects: [],
-        data: {},
-        length: 5
+        data: {
+            options: {
+                labels: [],
+                colors: COLORS,
+                legend: {
+                    show: true,
+                    position: 'top',
+                    horizontalAlign: 'center',
+                },
+            },
+            series: []
+        },
+        length: 5,
+        isLoading: false,
     };
 
     componentDidMount() {
@@ -45,11 +60,17 @@ class CareerGroupsChart extends PureComponent {
 
     getData() {
         const { selects, length } = this.state
+        this.setState({
+            isLoading: true
+        })
+
         fetch("http://127.0.0.1:5000/analysist_career_groups?career_groups=" + selects + "&length=" + length, {
             method: "GET"
         })
             .then(res => res.json())
             .then(result => {
+                console.log(result);
+
                 var labels = []
                 var data = []
                 result.result.forEach(item => {
@@ -58,13 +79,13 @@ class CareerGroupsChart extends PureComponent {
                 })
                 this.setState({
                     data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: COLORS,
-                            hoverBackgroundColor: COLORS
-                        }]
-                    }
+                        options: {
+                            ...data.options,
+                            labels: labels,
+                        },
+                        series: data,
+                    },
+                    isLoading: false
                 })
 
             });
@@ -72,54 +93,72 @@ class CareerGroupsChart extends PureComponent {
 
     handleChange = event => {
         const { value } = event.target
-        const {length} = this.state
+        const { length } = this.state
         if (value.length <= length) {
-            this.setState({ 
-                selects: value 
-            },() => {
-                this.getData()
+            this.setState({
+                selects: value
             });
         }
     };
 
-    onViewPress() {
+    onViewClicked() {
         this.getData()
     }
 
     render() {
         const { career_groups, classes } = this.props
-        const { selects, data } = this.state
+        const { selects, data, isLoading } = this.state
         return (
             <center>
-                <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="select-multiple-chip">Nhóm ngành nghề</InputLabel>
-                    <Select
-                        multiple
-                        value={selects}
-                        onChange={this.handleChange}
-                        input={<Input id="select-multiple-chip" />}
-                        renderValue={selected => (
-                            <div className={classes.chips}>
-                                {selected.map(value => (
-                                    <Chip key={value} label={value} className={classes.chip} />
+                <div style={{ height: 450 }}>
+                    {
+                        isLoading ?
+                            <div className={classes.placeholder}>
+                                <Fade
+                                    in={true}
+                                    style={{
+                                        transitionDelay: '0ms',
+                                    }}
+                                    unmountOnExit
+                                    color="secondary"
+                                    className={classes.loaded}
+                                >
+                                    <CircularProgress />
+                                </Fade>
+                            </div> : null
+                    }
+                    <div style={{ display: "flex", alignItems: "center", 'justifyContent': 'center' }}>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="select-multiple-chip">Nhóm ngành nghề</InputLabel>
+                            <Select
+                                multiple
+                                value={selects}
+                                onChange={this.handleChange}
+                                input={<Input id="select-multiple-chip" />}
+                                renderValue={selected => (
+                                    <div className={classes.chips}>
+                                        {selected.map(value => (
+                                            <Chip key={value} label={value} className={classes.chip} />
+                                        ))}
+                                    </div>
+                                )}
+                                MenuProps={MenuProps}
+                            >
+                                {career_groups.map((item, index) => (
+                                    <MenuItem key={index} value={item} style={getStyles(item, this)}>
+                                        {item}
+                                    </MenuItem>
                                 ))}
-                            </div>
-                        )}
-                        MenuProps={MenuProps}
-                    >
-                        {career_groups.map((item, index) => (
-                            <MenuItem key={index} value={item} style={getStyles(item, this)}>
-                                {item}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                            </Select>
+                        </FormControl>
+                        <Button variant="contained" className={classes.button} onClick={this.onViewClicked.bind(this)}>
+                            Xem
+      </Button>
+                    </div>
 
-                <Pie
-                    data={data}
-                    width={250}
-                    height={250}
-                    options={{ maintainAspectRatio: false }} />
+
+                    <ReactApexChart options={data.options} series={data.series} type="pie" width={500} />
+                </div>
             </center>
 
         )
@@ -151,8 +190,25 @@ const styles = theme => ({
     noLabel: {
         marginTop: theme.spacing.unit * 3,
     },
+    placeholder: {
+        height: 550,
+        width: `100%`,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        position: 'absolute',
+        zIndex: 1,
+        top: 0,
+        left: 0,
+    },
+    loaded: {
+        height: 40,
+        width: 40,
+        top: `50%`,
+        marginTop: -20,
+        position: 'relative'
+    },
     button: {
         margin: theme.spacing.unit,
+        width: 100
     },
 });
 

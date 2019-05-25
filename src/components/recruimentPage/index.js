@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import Search from "../Search";
 import RecrumentModal from './recrumentModal'
 import RecruimentTable from './recruiment-table'
+import PropTypes from 'prop-types';
+import Fade from '@material-ui/core/Fade';
+import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class RecuimentPage extends Component {
 
@@ -13,7 +17,7 @@ class RecuimentPage extends Component {
 
     this.state = {
       error: null,
-      isLoaded: false,
+      isLoading: false,
       items: [],
       career_groups: [],
       careers: [],
@@ -42,42 +46,17 @@ class RecuimentPage extends Component {
 
     this.getRecruimentsPerOffset()
 
-    // fetch("http://127.0.0.1:5000/career", { method: "GET" })
-    //   .then(res => res.json())
-    //   .then(
-    //     result => {
-    //       console.log("result: ", result);
-    //       this.setState({
-    //         isLoaded: true,
-    //         careers: result.result
-    //       });
-    //     },
-    //     error => {
-    //       this.setState({
-    //         isLoaded: true,
-    //         error
-    //       });
-    //     }
-    //   );
-
     fetch("http://127.0.0.1:5000/career_groups", { method: "GET" })
       .then(res => res.json())
       .then(
         result => {
           console.log("result: ", result);
           this.setState({
-            isLoaded: true,
             career_groups: result.result
           }, () => {
             this.setState({
               careers: this.getCareersInCareerGroup()
             })
-          });
-        },
-        error => {
-          this.setState({
-            isLoaded: true,
-            error
           });
         }
       );
@@ -90,14 +69,7 @@ class RecuimentPage extends Component {
         result => {
           console.log("result: ", result);
           this.setState({
-            isLoaded: true,
             tinh_thphos: result.result
-          });
-        },
-        error => {
-          this.setState({
-            isLoaded: true,
-            error
           });
         }
       );
@@ -133,6 +105,10 @@ class RecuimentPage extends Component {
     const { limit, page, searchParams } = this.state
     const { career_group, career, address, salary, exp, query } = searchParams
 
+    this.setState({
+      isLoading: true
+    })
+
     fetch("http://127.0.0.1:5000/search_recruitments?limit=" + limit
       + "&page=" + page
       + "&career_group=" + (career_group !== '-1' ? career_group : '')
@@ -149,14 +125,14 @@ class RecuimentPage extends Component {
         result => {
           console.log("result: ", result);
           this.setState({
-            isLoaded: true,
+            isLoading: false,
             items: result.result,
             totalSize: result.total_size
           });
         },
         error => {
           this.setState({
-            isLoaded: true,
+            isLoading: false,
             error
           });
         }
@@ -172,21 +148,21 @@ class RecuimentPage extends Component {
 
   handleOpenModal = () => {
     if (this.state.selects.length > 0) {
-      this.setState({ 
+      this.setState({
         openModal: true,
       });
     }
   };
 
   handleCloseModal = () => {
-    this.setState({ 
+    this.setState({
       openModal: false,
       clearSelected: true
     }, () => {
-        this.setState({
-          clearSelected: false
-        })
-      
+      this.setState({
+        clearSelected: false
+      })
+
     });
   };
 
@@ -295,55 +271,101 @@ class RecuimentPage extends Component {
   }
 
   render() {
-    const { error, isLoaded, items, careers, tinh_thphos, openModal, selects, limit,
+    const { isLoading, items, careers, tinh_thphos, openModal, selects, limit,
       totalSize, page, career_groups, searchParams, clearSelected } = this.state;
-    if (error) {
-      return <div>Error: {error.message}</div>;
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } else {
-      return (
-        <div>
-          <ul style={{ padding: 0 }}>
-            <Search
-              tinh_thphos={tinh_thphos}
-              career_groups={this.getCareerGroups(career_groups)}
-              careers={careers}
-              onViewClicked={this.handleOpenModal.bind(this)}
-              onCareerGroupChanged={this.handleCareerGroupChanged.bind(this)}
-              careerChanged={this.handleCareerChanged.bind(this)}
-              addressChanged={this.handleAddressChanged.bind(this)}
-              salaryChanged={this.handleSalaryChanged.bind(this)}
-              expChanged={this.handleExpChanged.bind(this)}
-              textChanged={this.handleTextChanged.bind(this)}
-              onSearchClicked={this.onSearchClicked.bind(this)}
-              careerValue={searchParams.career}
-              careerGroupValue={searchParams.career_group}
-              addressValue={searchParams.address}
-              salaryValue={searchParams.salary}
-              expValue={searchParams.exp}
-              onInputKeyDown={this.onInputKeyDown.bind(this)}
-            />
-            <br />
-            <RecruimentTable
-              style={{ marginRight: 20 }}
-              data={items}
-              totalSize={totalSize}
-              page={page}
-              rowsPerPage={limit}
-              handleChangePage={this.handleChangePage}
-              onHandleItemChecked={this.onHandleItemSelected}
-              clearSelected={clearSelected}
-            />
-          </ul>
-          <RecrumentModal isOpen={openModal} recruments={selects} 
-            closeModal={() => {
-              this.handleCloseModal()
-            }} 
+    const { classes } = this.props;
+    return (
+      <div>
+        {
+          isLoading ?
+            <div className={classes.placeholder}>
+              <Fade
+                in={true}
+                style={{
+                  transitionDelay: '0ms',
+                }}
+                unmountOnExit
+                color="secondary"
+                className={classes.loaded}
+              >
+                <CircularProgress />
+              </Fade>
+            </div> : null
+        }
+
+        <ul style={{ padding: 0 }}>
+          <Search
+            tinh_thphos={tinh_thphos}
+            career_groups={this.getCareerGroups(career_groups)}
+            careers={careers}
+            onViewClicked={this.handleOpenModal.bind(this)}
+            onCareerGroupChanged={this.handleCareerGroupChanged.bind(this)}
+            careerChanged={this.handleCareerChanged.bind(this)}
+            addressChanged={this.handleAddressChanged.bind(this)}
+            salaryChanged={this.handleSalaryChanged.bind(this)}
+            expChanged={this.handleExpChanged.bind(this)}
+            textChanged={this.handleTextChanged.bind(this)}
+            onSearchClicked={this.onSearchClicked.bind(this)}
+            careerValue={searchParams.career}
+            careerGroupValue={searchParams.career_group}
+            addressValue={searchParams.address}
+            salaryValue={searchParams.salary}
+            expValue={searchParams.exp}
+            onInputKeyDown={this.onInputKeyDown.bind(this)}
           />
-        </div>
-      );
-    }
+          <br />
+          <RecruimentTable
+            style={{ marginRight: 20 }}
+            data={items}
+            totalSize={totalSize}
+            page={page}
+            rowsPerPage={limit}
+            handleChangePage={this.handleChangePage}
+            onHandleItemChecked={this.onHandleItemSelected}
+            clearSelected={clearSelected}
+          />
+        </ul>
+        <RecrumentModal isOpen={openModal} recruments={selects}
+          closeModal={() => {
+            this.handleCloseModal()
+          }}
+        />
+      </div>
+    );
   }
 }
-export default RecuimentPage;
+
+const styles = theme => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  button: {
+    margin: theme.spacing.unit * 2,
+  },
+  placeholder: {
+    height: `100%`,
+    width: `100%`,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    position: 'fixed',
+    zIndex: 999999999,
+    top: 0,
+    left: 0,
+  },
+  loaded: {
+    height: 40,
+    width: 40,
+    top: `50%`,
+    left: `50%`,
+    marginTop: -20,
+    marginLeft: -20,
+    position: 'relative'
+  }
+});
+
+RecuimentPage.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(RecuimentPage);

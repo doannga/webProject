@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import CareerTag from './career-tag'
+import Moment from 'react-moment';
 
 const rows = [
   { id: 'title', align: 'center', disablePadding: true, label: 'Tuyển dụng' },
@@ -17,10 +18,7 @@ const rows = [
   { id: 'address', align: 'center', disablePadding: true, label: 'Địa chỉ' },
   { id: 'career', align: 'center', disablePadding: true, label: 'Ngành nghề' },
   { id: 'experience', align: 'center', disablePadding: true, label: 'Kinh nghiệm' },
-  { id: 'diploma', align: 'center', disablePadding: true, label: 'Bằng cấp' },
-  { id: 'trial_time', align: 'center', disablePadding: true, label: 'Thời gian thử việc' },
-  { id: 'sex', align: 'center', disablePadding: true, label: 'Giới tính' },
-  { id: 'age', align: 'center', disablePadding: true, label: 'Tuổi' },
+  { id: 'employment_type', align: 'center', disablePadding: true, label: 'Loại' },
   { id: 'expired', align: 'center', disablePadding: true, label: 'Hạn' },
 ];
 
@@ -69,20 +67,17 @@ const styles = theme => ({
 class RecruimentModalTable extends React.Component {
 
   handleSalary(salary) {
-    let length = salary.length
-    if (length === 2) {
-      if (!isNaN(salary[0]) && !isNaN(salary[1])) {
-        return this.convertStringToSalary(salary[0]) + " - " + this.convertStringToSalary(salary[1])
-      }
+    if (salary == null) {
+      return '0 VNĐ'
     }
-    return salary
+    return this.convertStringToSalary(salary.minValue) + ' - ' + this.convertStringToSalary(salary.maxValue) + ' ' + salary.currency
   }
 
   convertStringToSalary(salary) {
-    if (salary > 1000000) {
-      return salary / 1000000 + "tr"
+    if (salary == null) {
+      return '0'
     }
-    return salary
+    return salary.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
   }
 
   render() {
@@ -110,16 +105,17 @@ class RecruimentModalTable extends React.Component {
                            {n.title}
                         </a>
                       </TableCell>
-                      <TableCell align="left" padding='none' style={{ padding: 10 }}>{n.company}</TableCell>
-                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{this.handleSalary(n.salary)}</TableCell>
-                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{n.address}</TableCell>
-                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{<CareerTag items={n.career}/>}</TableCell>
-                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{n.experience}</TableCell>
-                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{n.diploma}</TableCell>
-                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{n.trial_time}</TableCell>
-                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{n.sex}</TableCell>
-                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{n.age}</TableCell>
-                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{n.expired}</TableCell>
+                      <TableCell align="left" padding='none' style={{ padding: 10 }}>{n.hiringOrganization.name}</TableCell>
+                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{this.handleSalary(n.baseSalary)}</TableCell>
+                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{n.jobLocation.address.addressLocality}</TableCell>
+                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{<CareerTag items={n.occupationalCategory}/>}</TableCell>
+                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{n.experienceRequirements}</TableCell>
+                      <TableCell align="center" padding='none' style={{ padding: 10 }}>{n.employmentType}</TableCell>
+                      <TableCell align="center" padding='none' style={{ padding: 10 }}>
+                        <Moment format="DD/MM/YYYY">
+                          {n.validThrough}
+                        </Moment>
+                      </TableCell>
                     </TableRow>
                   )
                 })
