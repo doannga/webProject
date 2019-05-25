@@ -6,7 +6,7 @@ from dict_careers import Career_dict
 from flask_pymongo import pymongo
 
 # full search support
-# db.job_information.createIndex({'$**': 'text'},{name: 'TextIndex'})
+# db.job_information1.createIndex({'title': 'text', 'hiringOrganization.name':'text'},{name: 'TextIndex'})
 
 app = Flask(__name__)
 CORS(app)
